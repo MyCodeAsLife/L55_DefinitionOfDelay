@@ -18,15 +18,12 @@ namespace L55_DefinitionOfDelay
     class Storage
     {
         private List<Stew> _stews;
-        private Random _random;
-
         private int _stewsCount;
         private int _currentYear;
 
         public Storage()
         {
             _stews = new List<Stew>();
-            _random = new Random();
             _stewsCount = 30;
             _currentYear = 2023;
 
@@ -49,34 +46,35 @@ namespace L55_DefinitionOfDelay
             int stewNameCount = Enum.GetNames(typeof(StewName)).Length;
 
             for (int i = 0; i < _stewsCount; i++)
-                _stews.Add(new Stew((StewName)_random.Next(stewNameCount), _currentYear, _random));
+                _stews.Add(new Stew((StewName)RandomGenerator.GetRandomNumber(stewNameCount), _currentYear));
         }
     }
 
     class Stew
     {
-        Random _random;
-
-        private int _minProductionYear;
-        private int _maxProductionYear;
-        private int _minExpirationDate;
-        private int _maxExpirationDate;
-
-        public Stew(StewName name, int maxProductionYear, Random random)
+        public Stew(StewName name, int maxProductionYear)
         {
-            _random = random;
-            _maxProductionYear = maxProductionYear;
-            _minProductionYear = 1977;
-            _maxExpirationDate = 30;
-            _minExpirationDate = 5;
+            int minProductionYear = 1977;
+            int maxExpirationDate = 30;
+            int minExpirationDate = 5;
             Name = name.ToString();
-            ProductionYear = _random.Next(_minProductionYear, _maxProductionYear + 1);
-            ExpirationDate = _random.Next(_minExpirationDate, _maxExpirationDate + 1);
+
+            ProductionYear = RandomGenerator.GetRandomNumber(minProductionYear, maxProductionYear + 1);
+            ExpirationDate = RandomGenerator.GetRandomNumber(minExpirationDate, maxExpirationDate + 1);
         }
 
         public string Name { get; private set; }
         public int ProductionYear { get; private set; }
         public int ExpirationDate { get; private set; }
+    }
+
+    static class RandomGenerator
+    {
+        private static Random s_random = new Random();
+
+        public static int GetRandomNumber(int minValue, int maxValue) => s_random.Next(minValue, maxValue);
+
+        public static int GetRandomNumber(int maxValue) => s_random.Next(maxValue);
     }
 
     enum StewName
